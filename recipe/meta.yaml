@@ -1,5 +1,5 @@
 {% set name = "skopeo" %}
-{% set version = "0.1.35" %}
+{% set version = "0.1.39" %}
 
 package:
   name: {{ name|lower }}
@@ -7,10 +7,10 @@ package:
 
 source:
   url: https://github.com/containers/skopeo/archive/v{{version}}.tar.gz
-  sha256: 0d7024c09d7b1822acb174912f5b06950a023ef5d05d6b8b442e563c512b4c4a
+  sha256: e9d70f7f7b891675a816f06a22df0490285ad20eefbd91f5da69ca12f56c29f2
 
 build:
-  number: 1
+  number: 0
   skip: True  # [win]
 
 requirements:
