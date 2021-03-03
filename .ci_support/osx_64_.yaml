@@ -5,7 +5,7 @@ MACOSX_SDK_VERSION:
 c_compiler:
 - clang
 c_compiler_version:
-- '10'
+- '11'
 cgo_compiler:
 - go-cgo
 channel_sources:
