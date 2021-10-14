@@ -19,7 +19,7 @@ build:
 
 requirements:
   build:
-    - {{ compiler('cgo') }} =1.15.*
+    - {{ compiler('cgo') }}
     - {{ compiler('c') }}
     - go-licenses
     - go-md2man
