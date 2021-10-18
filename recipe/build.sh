@@ -11,8 +11,8 @@ if ! [[ ${target_platform} =~ linux.* ]] ; then
 fi
 make -C "${module_path}" install \
   DISABLE_CGO="${disable_cgo}" \
-  CONTAINERSCONFDIR="${PREFIX}/etc/containers" \
-  SIGSTOREDIR="${PREFIX}/share/containers/sigstore" \
+  CONTAINERSCONFDIR="${PREFIX}/share/containers" \
+  SIGSTOREDIR="${PREFIX}/etc/containers/sigstore" \
   GIT_COMMIT=
 
 
