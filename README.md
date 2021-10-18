@@ -152,6 +152,7 @@ Feedstock Maintainers
 =====================
 
 * [@bgruening](https://github.com/bgruening/)
+* [@dhirschfeld](https://github.com/dhirschfeld/)
 * [@epruesse](https://github.com/epruesse/)
 * [@mbargull](https://github.com/mbargull/)
 
