@@ -1,4 +1,4 @@
-{% set version = "1.5.0" %}
+{% set version = "1.5.1" %}
 
 package:
   name: skopeo
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://github.com/containers/skopeo/archive/v{{ version }}.tar.gz
-  sha256: 4605a60a12a8f58cfe136d49242059a70810e786ee5849c778be0b4c7a49c453
+  sha256: 624fd87dd8de7623f8c19c09715dd6b37820101e605ff5951cc512cf50d067a1
   folder: src
   patches:
     # NOTE: This adds the memfd_create syscall which is not available on CentOS 6's kernels.
@@ -14,7 +14,7 @@ source:
     - 0002-Allow-relative-paths-for-system-config-files.patch
 
 build:
-  number: 1
+  number: 0
   skip: true  # [win]
 
 requirements:
