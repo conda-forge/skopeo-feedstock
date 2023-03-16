@@ -14,7 +14,7 @@ fi
 make -C "${module_path}" install \
   DISABLE_CGO="${disable_cgo}" \
   CONTAINERSCONFDIR="${PREFIX}/share/containers" \
-  SIGSTOREDIR="${PREFIX}/etc/containers/sigstore" \
+  LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
   GIT_COMMIT=
 
 
