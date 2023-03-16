@@ -5,7 +5,9 @@ module_path="${GOPATH:-"$( go env GOPATH )"}"/src/github.com/containers/skopeo
 mkdir -p "$( dirname "${module_path}" )"
 mv ./src "${module_path}"
 
-export GO111MODULE=off
+
+go mod init "${module_path}"
+go mod tidy
 
 disable_cgo=0
 if ! [[ ${target_platform} =~ linux.* ]] ; then
@@ -14,7 +16,7 @@ fi
 make -C "${module_path}" install \
   DISABLE_CGO="${disable_cgo}" \
   CONTAINERSCONFDIR="${PREFIX}/share/containers" \
-  SIGSTOREDIR="${PREFIX}/etc/containers/sigstore" \
+  LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
   GIT_COMMIT=
 
 
