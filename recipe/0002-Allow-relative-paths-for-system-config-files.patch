@@ -46,27 +46,6 @@ index 00000000..19990200
 +	}
 +	return ExeRelPath(path)
 +}
-diff --git a/vendor/github.com/containers/image/v5/docker/lookaside.go b/vendor/github.com/containers/image/v5/docker/lookaside.go
-index 6931fd07..27a1f6fc 100644
---- a/vendor/github.com/containers/image/v5/docker/lookaside.go
-+++ b/vendor/github.com/containers/image/v5/docker/lookaside.go
-@@ -9,6 +9,7 @@ import (
- 	"path/filepath"
- 	"strings"
- 
-+	"github.com/containers/common/pkg/config"
- 	"github.com/containers/image/v5/docker/reference"
- 	"github.com/containers/image/v5/types"
- 	"github.com/containers/storage/pkg/homedir"
-@@ -90,7 +91,7 @@ func registriesDirPath(sys *types.SystemContext) string {
- 		return filepath.Join(sys.RootForImplicitAbsolutePaths, systemRegistriesDirPath)
- 	}
- 
--	return systemRegistriesDirPath
-+	return config.FallbackToExeRelPath(systemRegistriesDirPath)
- }
- 
- // loadAndMergeConfig loads configuration files in dirPath
 diff --git a/vendor/github.com/containers/image/v5/pkg/sysregistriesv2/system_registries_v2.go b/vendor/github.com/containers/image/v5/pkg/sysregistriesv2/system_registries_v2.go
 index 9a571265..978fe251 100644
 --- a/vendor/github.com/containers/image/v5/pkg/sysregistriesv2/system_registries_v2.go
