@@ -7,7 +7,7 @@ cdt_name:
 cgo_compiler:
 - go-cgo
 cgo_compiler_version:
-- '1.17'
+- '1.18'
 channel_sources:
 - conda-forge
 channel_targets:
