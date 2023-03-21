@@ -1,9 +1,13 @@
 #! /usr/bin/env bash
 
-export GOPATH="$( pwd )"
+cp ./src/LICENSE ./
+module_path="${GOPATH:-"$( go env GOPATH )"}"/src/github.com/containers/skopeo
+mkdir -p "$( dirname "${module_path}" )"
+mv ./src "${module_path}"
 
-cp ./src/github.com/containers/skopeo/LICENSE ./
-module_path=src/github.com/containers/skopeo
+
+go mod init github.com/containers/skopeo
+go mod tidy
 
 disable_cgo=0
 if ! [[ ${target_platform} =~ linux.* ]] ; then
