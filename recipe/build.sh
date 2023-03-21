@@ -4,8 +4,6 @@ export GOPATH="$( pwd )"
 
 cp ./src/github.com/containers/skopeo ./
 module_path=src/github.com/containers/skopeo
-mkdir -p "$( dirname "${module_path}" )"
-mv ./src "${module_path}"
 
 disable_cgo=0
 if ! [[ ${target_platform} =~ linux.* ]] ; then
