@@ -1,7 +1,6 @@
 #! /usr/bin/env bash
 
 cp ./src/LICENSE ./
-cp ./src/go.mod ./src/cmd/skopeo/
 module_path="${GOPATH:-"$( go env GOPATH )"}"/src/github.com/containers/skopeo
 mkdir -p "$( dirname "${module_path}" )"
 mv ./src "${module_path}"
