@@ -6,7 +6,7 @@ mkdir -p "$( dirname "${module_path}" )"
 mv ./src "${module_path}"
 
 
-go mod init github.com/containers/skopeo
+go mod init "${module_path}"
 go mod tidy
 
 disable_cgo=0
