@@ -1,7 +1,9 @@
 #! /usr/bin/env bash
 
-cp ./src/LICENSE ./
-module_path="${GOPATH:-"$( go env GOPATH )"}"/src/github.com/containers/skopeo
+export GOPATH="$( pwd )"
+
+cp ./src/github.com/containers/skopeo ./
+module_path=src/github.com/containers/skopeo
 mkdir -p "$( dirname "${module_path}" )"
 mv ./src "${module_path}"
 
@@ -13,7 +15,6 @@ make -C "${module_path}" install \
   DISABLE_CGO="${disable_cgo}" \
   CONTAINERSCONFDIR="${PREFIX}/share/containers" \
   LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
-  GOMOD="${module_path}"/go.mod \
   GIT_COMMIT=
 
 
