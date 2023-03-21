@@ -5,7 +5,7 @@ module_path="${GOPATH:-"$( go env GOPATH )"}"/src/github.com/containers/skopeo
 mkdir -p "$( dirname "${module_path}" )"
 mv ./src "${module_path}"
 
-export GO111MODULE=on
+export GO111MODULE=auto
 
 disable_cgo=0
 if ! [[ ${target_platform} =~ linux.* ]] ; then

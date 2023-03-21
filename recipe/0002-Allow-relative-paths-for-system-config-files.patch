@@ -1,13 +1,3 @@
-diff --git a/go.mod b/go.mod
-index 5e2dd7bd..7c6c68bd 100644
---- a/go.mod
-+++ b/go.mod
-@@ -1,4 +1,4 @@
--module github.com/containers/skopeo
-+module github.com/containers/skopeo/cmd/skopeo
- 
- go 1.17
- 
 diff --git a/vendor/github.com/containers/common/pkg/config/config.go b/vendor/github.com/containers/common/pkg/config/config.go
 new file mode 100644
 index 00000000..19990200
