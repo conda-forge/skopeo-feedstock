@@ -2,7 +2,7 @@
 
 export GOPATH="$( pwd )"
 
-cp ./src/github.com/containers/skopeo ./
+cp ./src/github.com/containers/skopeo/LICENSE ./
 module_path=src/github.com/containers/skopeo
 
 disable_cgo=0
