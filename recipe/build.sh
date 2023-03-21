@@ -13,6 +13,7 @@ make -C "${module_path}" install \
   DISABLE_CGO="${disable_cgo}" \
   CONTAINERSCONFDIR="${PREFIX}/share/containers" \
   LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
+  GOMOD="${module_path}"/go.mod \
   GIT_COMMIT=
 
 
