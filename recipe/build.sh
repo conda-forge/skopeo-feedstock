@@ -5,9 +5,21 @@ module_path="${GOPATH:-"$( go env GOPATH )"}"/src/github.com/containers/skopeo
 mkdir -p "$( dirname "${module_path}" )"
 mv ./src "${module_path}"
 
-
-go mod init "${module_path}"
-go mod tidy
+GOARCH="amd64"
+GOOS=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m)
+switch $ARCH in
+    amd64 | x86_64)
+        GOARCH="amd64"
+        ;;
+    arm64 | aarch64)
+        GOARCH="arm64"
+        ;;
+    *)
+        echo "Unsupported architecture: $ARCH"
+        exit 1
+        ;;
+esac
 
 disable_cgo=0
 if ! [[ ${target_platform} =~ linux.* ]] ; then
@@ -15,6 +27,8 @@ if ! [[ ${target_platform} =~ linux.* ]] ; then
 fi
 make -C "${module_path}" install \
   DISABLE_CGO="${disable_cgo}" \
+  GOOS="${GOOS}" \
+  GOARCH="${GOARCH}" \
   CONTAINERSCONFDIR="${PREFIX}/share/containers" \
   LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
   GIT_COMMIT=
@@ -58,4 +72,7 @@ cat "${2}"
   rm -r "${acc_dir}"
 }
 
-gather_licenses ./thirdparty-licenses.txt 'github.com/containers/skopeo/cmd/skopeo'
+GOBIN=${PREFIX}/bin go install github.com/google/go-licenses@v1.0.0
+pushd "$module_path"
+# gather_licenses ./thirdparty-licenses.txt './cmd/skopeo'
+popd
