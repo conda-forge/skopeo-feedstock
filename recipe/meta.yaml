@@ -21,6 +21,7 @@ requirements:
   build:
     - {{ compiler('cgo') }}
     - {{ compiler('c') }}
+    - go-licenses
     - go-md2man
     - make
   host:
@@ -45,6 +46,7 @@ about:
   license_family: Apache
   license_file:
     - LICENSE
+    - thirdparty-licenses.txt
   summary: Perform operations on container images without docker daemon.
   description: |
     Skopeo can copy, inspect delete, sign and verify container images
