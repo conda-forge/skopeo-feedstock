@@ -46,7 +46,7 @@ about:
   license_family: Apache
   license_file:
     - LICENSE
-    - thirdparty-licenses.txt
+    - 3rd_party_licenses/
   summary: Perform operations on container images without docker daemon.
   description: |
     Skopeo can copy, inspect delete, sign and verify container images

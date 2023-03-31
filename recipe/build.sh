@@ -9,11 +9,6 @@ mv ./src "${module_path}"
 
 export GO111MODULE=auto
 
-pushd "$module_path"
-go mod download
-go-licenses save ./cmd/skopeo --save_path=3rd_party_license
-popd
-
 export GOARCH="amd64"
 export GOOS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
@@ -40,41 +35,10 @@ make -C "${module_path}" install \
   LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
   GIT_COMMIT=
 
-
-gather_licenses() {
-  # shellcheck disable=SC2039  # Allow widely supported non-POSIX local keyword.
-  local module output tmp_dir acc_dir
-  output="${1}"
-  shift
-  tmp_dir="$(pwd)/gather-licenses-tmp"
-  acc_dir="$(pwd)/gather-licenses-acc"
-  mkdir "${acc_dir}"
-  cat > "${output}" <<'EOF'
---------------------------------------------------------------------------------
-The output below is generated with `go-licenses csv` and `go-licenses save`.
-================================================================================
-EOF
-  for module ; do
-    cat >> "${output}" <<EOF
-
-go-licenses csv ${module}
-================================================================================
-EOF
-    go-licenses csv "${module}" | sort >> "${output}"
-    go-licenses save "${module}" --save_path="${tmp_dir}"
-    chmod -R +w "${acc_dir}" "${tmp_dir}"
-    cp -r "${tmp_dir}"/* "${acc_dir}"/
-    rm -r "${tmp_dir}"
-  done
-  # shellcheck disable=SC2016  # Not expanding $ in single quotes intentional.
-  find "${acc_dir}" -type f | sort | xargs -L1 sh -c '
-cat <<EOF
-
---------------------------------------------------------------------------------
-${2#${1%/}/}
-================================================================================
-EOF
-cat "${2}"
-' -- "${acc_dir}" >> "${output}"
-  rm -r "${acc_dir}"
-}
+export THIRD_PARTY_LICENSES="${PWD}/3rd_party_licenses/"
+pushd "${module_path}"
+echo "replace github.com/containers/common v0.51.0 => github.com/containers/common v1.0.1" >> go.mod
+go mod tidy -compat=1.17
+go mod vendor
+go-licenses save ./cmd/skopeo --save_path="${THIRD_PARTY_LICENSES}"
+popd
