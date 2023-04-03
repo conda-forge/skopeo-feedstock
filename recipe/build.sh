@@ -14,10 +14,11 @@ if ! [[ ${target_platform} =~ linux.* ]] ; then
     disable_cgo=1
 fi
 
-export GOARCH="amd64"
-export GOOS=$(uname -s | tr '[:upper:]' '[:lower:]')
-ARCH=$(uname -m)
-case $ARCH in
+declare -a os_arch=($(echo $target_platform | tr "-" "\n"))
+
+export GOOS="${os_arch[0]}"
+export GOARCH="${os_arch[1]}"
+case $GOARCH in
     amd64 | x86_64)
         export GOARCH="amd64"
         make -C "${module_path}" install \
