@@ -1,59 +1,49 @@
 #! /usr/bin/env bash
 
+set -x
+
 cp ./src/LICENSE ./
 module_path="${GOPATH:-"$( go env GOPATH )"}"/src/github.com/containers/skopeo
 mkdir -p "$( dirname "${module_path}" )"
 mv ./src "${module_path}"
 
-export GO111MODULE=off
-
 disable_cgo=0
 if ! [[ ${target_platform} =~ linux.* ]] ; then
     disable_cgo=1
 fi
-make -C "${module_path}" install \
-  DISABLE_CGO="${disable_cgo}" \
-  CONTAINERSCONFDIR="${PREFIX}/share/containers" \
-  SIGSTOREDIR="${PREFIX}/etc/containers/sigstore" \
-  GIT_COMMIT=
 
+export GOOS=$(go env GOOS)
+export GOARCH=$(go env GOARCH)
 
-gather_licenses() {
-  # shellcheck disable=SC2039  # Allow widely supported non-POSIX local keyword.
-  local module output tmp_dir acc_dir
-  output="${1}"
-  shift
-  tmp_dir="$(pwd)/gather-licenses-tmp"
-  acc_dir="$(pwd)/gather-licenses-acc"
-  mkdir "${acc_dir}"
-  cat > "${output}" <<'EOF'
---------------------------------------------------------------------------------
-The output below is generated with `go-licenses csv` and `go-licenses save`.
-================================================================================
-EOF
-  for module ; do
-    cat >> "${output}" <<EOF
+if [[ ${GOARCH} == "arm64" ]] ; then
+    pushd "${module_path}"
+    
+    make bin/skopeo.${GOOS}.${GOARCH} \
+        DISABLE_CGO="${disable_cgo}" \
+        CONTAINERSCONFDIR="${PREFIX}/share/containers" \
+        LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
+        GIT_COMMIT=
+    install -d -m 755 "${PREFIX}/bin"
+    install -m 755 bin/skopeo.${GOOS}.${GOARCH} "${PREFIX}/bin/skopeo"
+    make install-docs \
+        DISABLE_CGO="${disable_cgo}" \
+        CONTAINERSCONFDIR="${PREFIX}/share/containers" \
+        LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
+        GIT_COMMIT=
+    
+    popd
+else
+    make -C "${module_path}" install \
+            DISABLE_CGO="${disable_cgo}" \
+            CONTAINERSCONFDIR="${PREFIX}/share/containers" \
+            LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
+            GIT_COMMIT=
+fi
 
-go-licenses csv ${module}
-================================================================================
-EOF
-    go-licenses csv "${module}" | sort >> "${output}"
-    go-licenses save "${module}" --save_path="${tmp_dir}"
-    chmod -R +w "${acc_dir}" "${tmp_dir}"
-    cp -r "${tmp_dir}"/* "${acc_dir}"/
-    rm -r "${tmp_dir}"
-  done
-  # shellcheck disable=SC2016  # Not expanding $ in single quotes intentional.
-  find "${acc_dir}" -type f | sort | xargs -L1 sh -c '
-cat <<EOF
-
---------------------------------------------------------------------------------
-${2#${1%/}/}
-================================================================================
-EOF
-cat "${2}"
-' -- "${acc_dir}" >> "${output}"
-  rm -r "${acc_dir}"
-}
-
-gather_licenses ./thirdparty-licenses.txt 'github.com/containers/skopeo/cmd/skopeo'
+export THIRD_PARTY_LICENSES="${PWD}/3rd_party_licenses/"
+pushd "${module_path}"
+echo "replace github.com/containers/common v0.51.0 => github.com/containers/common v1.0.1" >> go.mod
+go mod tidy -compat=1.17
+go mod vendor
+go-licenses save ./cmd/skopeo --save_path="${THIRD_PARTY_LICENSES}"
+popd

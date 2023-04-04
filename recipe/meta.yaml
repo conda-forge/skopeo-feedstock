@@ -1,4 +1,4 @@
-{% set version = "1.6.1" %}
+{% set version = "1.11.2" %}
 
 package:
   name: skopeo
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://github.com/containers/skopeo/archive/v{{ version }}.tar.gz
-  sha256: 304016ec4eb802bf1e1b350854db50bdc99a93dcbcc71f9d531dbb916dc146f3
+  sha256: c7d0b0d1c379ae51e03e32ec31e243257d66de810d73704b7e9ac0e87cbec745
   folder: src
   patches:
     # NOTE: This adds the memfd_create syscall which is not available on CentOS 6's kernels.
@@ -46,7 +46,7 @@ about:
   license_family: Apache
   license_file:
     - LICENSE
-    - thirdparty-licenses.txt
+    - 3rd_party_licenses/
   summary: Perform operations on container images without docker daemon.
   description: |
     Skopeo can copy, inspect delete, sign and verify container images
