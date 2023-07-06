@@ -5,7 +5,7 @@ MACOSX_SDK_VERSION:
 c_compiler:
 - clang
 c_compiler_version:
-- '14'
+- '15'
 cgo_compiler:
 - go-cgo
 cgo_compiler_version:
