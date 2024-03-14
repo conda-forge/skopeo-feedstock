@@ -1,4 +1,4 @@
-{% set version = "1.14.2" %}
+{% set version = "1.15.0" %}
 
 package:
   name: skopeo
@@ -6,7 +6,7 @@ package:
 
 source:
   url: https://github.com/containers/skopeo/archive/v{{ version }}.tar.gz
-  sha256: f0f5bc1367982d195c4bc13c003ee7ab0c829d36d808fe519accef64ebf5de23
+  sha256: f219d31e5f3742b08a6e7327d84fd84cdcf8e5a297914bb6e19a96fef1b19b76
   folder: src
   patches:
     # NOTE: This adds the memfd_create syscall which is not available on CentOS 6's kernels.
