@@ -1,50 +1,53 @@
-{% set version = "1.15.2" %}
+schema_version: 1
+
+context:
+  version: 1.15.2
 
 package:
   name: skopeo
-  version: {{ version }}
+  version: ${{ version }}
 
 source:
-  url: https://github.com/containers/skopeo/archive/v{{ version }}.tar.gz
+  url: https://github.com/containers/skopeo/archive/v${{ version }}.tar.gz
   sha256: 9d5e2163fe3bc0fc5d36d0e0e43e6e3cf26e12a855ae53e2aa4ddbe60acced3c
-  folder: src
+  target_directory: src
   patches:
     # NOTE: This adds the memfd_create syscall which is not available on CentOS 6's kernels.
     - 0001-Add-missing-defines-for-CentOS-6.patch
     - 0002-Allow-relative-paths-for-system-config-files.patch
 
 build:
-  number: 0
-  skip: true  # [win]
+  number: 1
+  skip: win
 
 requirements:
   build:
-    - {{ compiler('cgo') }}
-    - {{ compiler('c') }}
-    - {{ stdlib("c") }}
+    - ${{ compiler('cgo') }}
+    - ${{ compiler('c') }}
+    - ${{ stdlib("c") }}
     - go-licenses
     - go-md2man
     - make
   host:
-    - btrfs-progs  # [linux]
+    - if: linux
+      then: btrfs-progs
     - containers-common
-    - gpgme  # [linux]
-    - libassuan  # [linux]
-    - libdevmapper  # [linux]
+    - if: linux
+      then: gpgme
+    - if: linux
+      then: libassuan
+    - if: linux
+      then: libdevmapper
   run:
     - containers-common
 
-test:
-  commands:
-    - skopeo --help
-    - skopeo --version
+tests:
+  - script:
+      - skopeo --help
+      - skopeo --version
 
 about:
-  home: https://github.com/containers/skopeo
-  dev_url: https://github.com/containers/skopeo
-  doc_url: https://github.com/containers/skopeo
   license: Apache-2.0
-  license_family: Apache
   license_file:
     - LICENSE
     - 3rd_party_licenses/
@@ -54,6 +57,11 @@ about:
     without requiring access to a docker daemon. It supports the local
     image store, API v2 registries, image archive (as created by
     docker save), OCI and OSTree and a local directory format.
+
+
+  homepage: https://github.com/containers/skopeo
+  repository: https://github.com/containers/skopeo
+  documentation: https://github.com/containers/skopeo
 
 extra:
   recipe-maintainers:
