@@ -29,6 +29,7 @@ tests:
   - script:
       - skopeo --help
       - skopeo --version
+      - skopeo inspect --override-arch amd64 --override-os linux docker://docker.io/alpine
 
 about:
   license: Apache-2.0
