@@ -18,7 +18,9 @@ build:
     - win
   script:
     - cd src
-    - make -C . install \
+    # Use specific targets instead of 'install' to avoid running the binary
+    # (which fails during cross-compilation from osx-amd64 to osx-arm64)
+    - make install-binary install-docs \
         DISABLE_CGO="1" \
         CONTAINERSCONFDIR="${PREFIX}/share/containers" \
         LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
