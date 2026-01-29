@@ -23,6 +23,10 @@ build:
         CONTAINERSCONFDIR="${PREFIX}/share/containers" \
         LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
         GIT_COMMIT=
+    # Remove gpgme-related files before running go-licenses.
+    # These files require CGO and are excluded from the build when DISABLE_CGO=1.
+    # The build uses pure Go alternatives via the containers_image_openpgp tag instead.
+    # Without removal, go-licenses fails with "build constraints exclude all Go files".
     - rm -rf vendor/github.com/proglottis/gpgme
     - rm -f vendor/go.podman.io/image/v5/signature/mechanism_gpgme.go
     - rm -f vendor/go.podman.io/image/v5/signature/mechanism_gpgme_only.go
