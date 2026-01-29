@@ -46,12 +46,7 @@ about:
   license_file:
     - src/LICENSE
     - library_licenses/
-  summary: Perform operations on container images without docker daemon.
-  description: |
-    Skopeo can copy, inspect delete, sign and verify container images
-    without requiring access to a docker daemon. It supports the local
-    image store, API v2 registries, image archive (as created by
-    docker save), OCI and OSTree and a local directory format.
+  summary: Work with remote images registries - retrieving information, images, signing content
   homepage: https://github.com/containers/skopeo
   repository: https://github.com/containers/skopeo
   documentation: https://github.com/containers/skopeo
