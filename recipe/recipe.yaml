@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: 1.15.2
+  version: 1.21.0
 
 package:
   name: skopeo
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://github.com/containers/skopeo/archive/v${{ version }}.tar.gz
-  sha256: 9d5e2163fe3bc0fc5d36d0e0e43e6e3cf26e12a855ae53e2aa4ddbe60acced3c
+  sha256: f76eeddf697a3cc7a872e3077ab4d0fdbebe9f3c6171462e3e9feb84368b3fac
   target_directory: src
 
 build:
@@ -17,7 +17,8 @@ build:
 
 requirements:
   build:
-    - ${{ compiler("go-nocgo") }}
+    - ${{ compiler("go-cgo") }}
+    - ${{ compiler("c") }}
     - make
     - go-licenses
     - go-md2man
