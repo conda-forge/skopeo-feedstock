@@ -32,7 +32,7 @@ tests:
 about:
   license: Apache-2.0
   license_file:
-    # - src/LICENSE
+    - src/LICENSE
     - library_licenses/
   summary: Perform operations on container images without docker daemon.
   description: |
