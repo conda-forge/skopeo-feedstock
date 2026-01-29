@@ -18,17 +18,19 @@ build:
     - win
   script:
     - cd src
-    - go-licenses save ./cmd/skopeo --save_path="../library_licenses"
     - make -C . install \
         DISABLE_CGO="1" \
         CONTAINERSCONFDIR="${PREFIX}/share/containers" \
         LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
         GIT_COMMIT=
+    - rm -rf vendor/github.com/proglottis/gpgme
+    - rm -f vendor/go.podman.io/image/v5/signature/mechanism_gpgme.go
+    - rm -f vendor/go.podman.io/image/v5/signature/mechanism_gpgme_only.go
+    - go-licenses save ./cmd/skopeo --save_path="../library_licenses"
 
 requirements:
   build:
-    - ${{ compiler("go-cgo") }}
-    - ${{ compiler("c") }}
+    - ${{ compiler("go-nocgo") }}
     - make
     - go-licenses
     - go-md2man
