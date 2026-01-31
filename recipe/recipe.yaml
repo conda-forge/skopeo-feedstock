@@ -11,6 +11,8 @@ source:
   url: https://github.com/containers/skopeo/archive/v${{ version }}.tar.gz
   sha256: f76eeddf697a3cc7a872e3077ab4d0fdbebe9f3c6171462e3e9feb84368b3fac
   target_directory: src
+  patches: 
+    - 0002-Allow-relative-paths-for-system-config-files.patch
 
 build:
   number: 0
@@ -47,7 +49,10 @@ tests:
   - script:
       - skopeo --help
       - skopeo --version
-      - skopeo inspect --override-arch amd64 --override-os linux docker://docker.io/alpine
+      # Verify that skopeo looks for config files relative to the conda prefix
+      # (via the 0002-Allow-relative-paths-for-system-config-files.patch)
+      # rather than hardcoded system paths like /etc/containers/.
+      - skopeo --debug inspect --override-arch amd64 --override-os linux docker://docker.io/alpine 2>&1
 
 about:
   license: Apache-2.0
