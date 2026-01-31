@@ -7,16 +7,11 @@ Home: https://github.com/containers/skopeo
 
 Package license: Apache-2.0
 
-Summary: Perform operations on container images without docker daemon.
+Summary: Work with remote images registries - retrieving information, images, signing content
 
 Development: https://github.com/containers/skopeo
 
 Documentation: https://github.com/containers/skopeo
-
-Skopeo can copy, inspect delete, sign and verify container images
-without requiring access to a docker daemon. It supports the local
-image store, API v2 registries, image archive (as created by
-docker save), OCI and OSTree and a local directory format.
 
 Current build status
 ====================
@@ -61,13 +56,6 @@ Current build status
               <td>
                 <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=6608&branchName=main">
                   <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/skopeo-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_arm64_" alt="variant">
-                </a>
-              </td>
-            </tr><tr>
-              <td>win_64</td>
-              <td>
-                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=6608&branchName=main">
-                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/skopeo-feedstock?branchName=main&jobName=win&configuration=win%20win_64_" alt="variant">
                 </a>
               </td>
             </tr>
@@ -202,5 +190,6 @@ Feedstock Maintainers
 * [@bgruening](https://github.com/bgruening/)
 * [@dhirschfeld](https://github.com/dhirschfeld/)
 * [@epruesse](https://github.com/epruesse/)
+* [@janjagusch](https://github.com/janjagusch/)
 * [@mbargull](https://github.com/mbargull/)
 
