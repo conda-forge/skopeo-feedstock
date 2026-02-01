@@ -7,17 +7,11 @@ Home: https://github.com/containers/skopeo
 
 Package license: Apache-2.0
 
-Summary: Perform operations on container images without docker daemon.
+Summary: Work with remote images registries - retrieving information, images, signing content
 
 Development: https://github.com/containers/skopeo
 
 Documentation: https://github.com/containers/skopeo
-
-Skopeo can copy, inspect delete, sign and verify container images
-without requiring access to a docker daemon. It supports the local
-image store, API v2 registries, image archive (as created by
-docker save), OCI and OSTree and a local directory format.
-
 
 Current build status
 ====================
@@ -148,12 +142,12 @@ it is possible to build and upload installable packages to the
 [conda-forge](https://anaconda.org/conda-forge) [anaconda.org](https://anaconda.org/)
 channel for Linux, Windows and OSX respectively.
 
-To manage the continuous integration and simplify feedstock maintenance
+To manage the continuous integration and simplify feedstock maintenance,
 [conda-smithy](https://github.com/conda-forge/conda-smithy) has been developed.
 Using the ``conda-forge.yml`` within this repository, it is possible to re-render all of
 this feedstock's supporting files (e.g. the CI configuration files) with ``conda smithy rerender``.
 
-For more information please check the [conda-forge documentation](https://conda-forge.org/docs/).
+For more information, please check the [conda-forge documentation](https://conda-forge.org/docs/).
 
 Terminology
 ===========
@@ -180,7 +174,7 @@ merged, the recipe will be re-built and uploaded automatically to the
 everybody to install and use from the `conda-forge` channel.
 Note that all branches in the conda-forge/skopeo-feedstock are
 immediately built and any created packages are uploaded, so PRs should be based
-on branches in forks and branches in the main repository should only be used to
+on branches in forks, and branches in the main repository should only be used to
 build distinct package versions.
 
 In order to produce a uniquely identifiable distribution:
@@ -196,5 +190,6 @@ Feedstock Maintainers
 * [@bgruening](https://github.com/bgruening/)
 * [@dhirschfeld](https://github.com/dhirschfeld/)
 * [@epruesse](https://github.com/epruesse/)
+* [@janjagusch](https://github.com/janjagusch/)
 * [@mbargull](https://github.com/mbargull/)
 
