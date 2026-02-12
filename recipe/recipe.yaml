@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: 1.21.0
+  version: "1.22.0"
 
 package:
   name: skopeo
@@ -9,9 +9,9 @@ package:
 
 source:
   url: https://github.com/containers/skopeo/archive/v${{ version }}.tar.gz
-  sha256: f76eeddf697a3cc7a872e3077ab4d0fdbebe9f3c6171462e3e9feb84368b3fac
+  sha256: dc9aa749973b10d3c2672d2839e61bac75cf32d5e5106463420b83653c9df3ff
   target_directory: src
-  patches: 
+  patches:
     - 0001-Allow-relative-paths-for-system-config-files.patch
 
 build:
@@ -22,11 +22,7 @@ build:
     - cd src
     # Use specific targets instead of 'install' to avoid running the binary
     # (which fails during cross-compilation from osx-amd64 to osx-arm64)
-    - make install-binary install-docs \
-        DISABLE_CGO="1" \
-        CONTAINERSCONFDIR="${PREFIX}/share/containers" \
-        LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \
-        GIT_COMMIT=
+    - make install-binary install-docs \ DISABLE_CGO="1" \ CONTAINERSCONFDIR="${PREFIX}/share/containers" \ LOOKASIDEDIR="${PREFIX}/etc/containers/sigstore" \ GIT_COMMIT=
     # Remove gpgme-related files before running go-licenses.
     # These files require CGO and are excluded from the build when DISABLE_CGO=1.
     # The build uses pure Go alternatives via the containers_image_openpgp tag instead.
