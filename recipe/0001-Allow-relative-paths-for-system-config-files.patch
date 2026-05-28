@@ -1,10 +1,48 @@
-diff --git a/vendor/go.podman.io/image/v5/pkg/sysregistriesv2/system_registries_v2.go b/vendor/go.podman.io/image/v5/pkg/sysregistriesv2/system_registries_v2.go
---- a/vendor/go.podman.io/image/v5/pkg/sysregistriesv2/system_registries_v2.go
-+++ b/vendor/go.podman.io/image/v5/pkg/sysregistriesv2/system_registries_v2.go
-@@ -22,6 +22,27 @@ import (
- 	"go.podman.io/storage/pkg/regexp"
+diff --git a/vendor/go.podman.io/storage/pkg/configfile/parse.go b/vendor/go.podman.io/storage/pkg/configfile/parse.go
+index 9a9ea71..890e250 100644
+--- a/vendor/go.podman.io/storage/pkg/configfile/parse.go
++++ b/vendor/go.podman.io/storage/pkg/configfile/parse.go
+@@ -150,6 +150,8 @@ func getSearchPaths(conf *File) (SearchPaths, bool, error) {
+ 		defaultConfig = filepath.Join(defaultConfig, configFileName)
+ 		if conf.RootForImplicitAbsolutePaths != "" {
+ 			defaultConfig = filepath.Join(conf.RootForImplicitAbsolutePaths, defaultConfig)
++		} else {
++			defaultConfig = condaFallbackToExeRelPath(defaultConfig)
+ 		}
+ 	}
+ 
+@@ -159,6 +161,8 @@ func getSearchPaths(conf *File) (SearchPaths, bool, error) {
+ 		overrideConfig = filepath.Join(overrideConfig, configFileName)
+ 		if conf.RootForImplicitAbsolutePaths != "" {
+ 			overrideConfig = filepath.Join(conf.RootForImplicitAbsolutePaths, overrideConfig)
++		} else {
++			overrideConfig = condaFallbackToExeRelPath(overrideConfig)
+ 		}
+ 	}
+ 
+diff --git a/vendor/go.podman.io/storage/pkg/configfile/path.go b/vendor/go.podman.io/storage/pkg/configfile/path.go
+index d9443dd..329c930 100644
+--- a/vendor/go.podman.io/storage/pkg/configfile/path.go
++++ b/vendor/go.podman.io/storage/pkg/configfile/path.go
+@@ -2,6 +2,14 @@
+ 
+ package configfile
+ 
++import (
++	"os"
++	"path/filepath"
++	"strings"
++
++	"github.com/sirupsen/logrus"
++)
++
+ const (
+ 	// builtinSystemConfigPath is the location for the default config files shipped by the distro/vendor.
+ 	builtinSystemConfigPath = "/usr/share/containers"
+@@ -10,6 +18,31 @@ const (
+ 	builtinAdminOverrideConfigPath = "/etc/containers"
  )
-
+ 
 +// For Conda environments we transform default configuration paths like so:
 +// (This assumes the executable always resides at PREFIX/bin/executable!)
 +//   /etc/path -> PREFIX/bin/../etc/path -> PREFIX/etc/path
@@ -17,7 +55,11 @@ diff --git a/vendor/go.podman.io/image/v5/pkg/sysregistriesv2/system_registries_
 +	relativePath := strings.TrimPrefix(path, "/usr")
 +	return filepath.Join(filepath.Dir(filepath.Dir(exePath)), relativePath)
 +}
++
 +func condaFallbackToExeRelPath(path string) string {
++	if path == "" {
++		return path
++	}
 +	if _, err := os.Stat(path); err == nil {
 +		return path
 +	}
@@ -26,79 +68,6 @@ diff --git a/vendor/go.podman.io/image/v5/pkg/sysregistriesv2/system_registries_
 +	return condaPath
 +}
 +
- // systemRegistriesConfPath is the path to the system-wide registry
- // configuration file and is used to add/subtract potential registries for
- // obtaining images.  You can override this at build time with
-@@ -587,7 +608,7 @@ func newConfigWrapperWithHomeDir(ctx *types.SystemContext, homeDir string) confi
- 	} else if ctx != nil && ctx.RootForImplicitAbsolutePaths != "" {
- 		wrapper.configPath = filepath.Join(ctx.RootForImplicitAbsolutePaths, systemRegistriesConfPath)
- 	} else {
--		wrapper.configPath = systemRegistriesConfPath
-+		wrapper.configPath = condaFallbackToExeRelPath(systemRegistriesConfPath)
- 	}
-
- 	// potentially use both system and per-user dirs if not using per-user config file
-@@ -598,7 +619,7 @@ func newConfigWrapperWithHomeDir(ctx *types.SystemContext, homeDir string) confi
- 		wrapper.configDirPath = filepath.Join(ctx.RootForImplicitAbsolutePaths, systemRegistriesConfDirPath)
- 		wrapper.userConfigDirPath = userRegistriesDirPath
- 	} else {
--		wrapper.configDirPath = systemRegistriesConfDirPath
-+		wrapper.configDirPath = condaFallbackToExeRelPath(systemRegistriesConfDirPath)
- 		wrapper.userConfigDirPath = userRegistriesDirPath
- 	}
-
-diff --git a/vendor/go.podman.io/image/v5/signature/policy_config.go b/vendor/go.podman.io/image/v5/signature/policy_config.go
---- a/vendor/go.podman.io/image/v5/signature/policy_config.go
-+++ b/vendor/go.podman.io/image/v5/signature/policy_config.go
-@@ -19,7 +19,9 @@ import (
- 	"fmt"
- 	"os"
- 	"path/filepath"
-+	"strings"
-
-+	"github.com/sirupsen/logrus"
- 	"go.podman.io/image/v5/docker/reference"
- 	"go.podman.io/image/v5/signature/internal"
- 	"go.podman.io/image/v5/transports"
-@@ -28,6 +30,25 @@ import (
- 	"go.podman.io/storage/pkg/homedir"
- 	"go.podman.io/storage/pkg/regexp"
- )
-+
-+// For Conda environments we transform default configuration paths like so:
-+// (This assumes the executable always resides at PREFIX/bin/executable!)
-+//   /etc/path -> PREFIX/bin/../etc/path -> PREFIX/etc/path
-+//   /usr/share/path -> PREFIX/bin/../share/path -> PREFIX/share/path
-+func condaExeRelPath(path string) string {
-+	exePath, err := os.Executable()
-+	if err != nil {
-+		return path
-+	}
-+	relativePath := strings.TrimPrefix(path, "/usr")
-+	return filepath.Join(filepath.Dir(filepath.Dir(exePath)), relativePath)
-+}
-+func condaFallbackToExeRelPath(path string) string {
-+	if _, err := os.Stat(path); err == nil {
-+		return path
-+	}
-+	return condaExeRelPath(path)
-+}
-
- // systemDefaultPolicyPath is the policy path used for DefaultPolicy().
- // You can override this at build time with
-@@ -83,7 +104,14 @@ func defaultPolicyPathWithHomeDir(sys *types.SystemContext, homeDir string, syst
- 	if err := fileutils.Exists(systemPolicyPath); err == nil {
- 		return systemPolicyPath, nil
- 	}
--	return "", fmt.Errorf("no policy.json file found at any of the following: %q, %q", userPolicyFilePath, systemPolicyPath)
-+	condaPath := condaExeRelPath(systemPolicyPath)
-+	if condaPath != systemPolicyPath {
-+		if err := fileutils.Exists(condaPath); err == nil {
-+			logrus.Debugf("Using Conda environment policy path %q (system path %q not found)", condaPath, systemPolicyPath)
-+			return condaPath, nil
-+		}
-+	}
-+	return "", fmt.Errorf("no policy.json file found at any of the following: %q, %q, %q", userPolicyFilePath, systemPolicyPath, condaPath)
+ func getAdminOverrideConfigPath() string {
+ 	return builtinAdminOverrideConfigPath
  }
-
- // NewPolicyFromFile returns a policy configured in the specified file.
