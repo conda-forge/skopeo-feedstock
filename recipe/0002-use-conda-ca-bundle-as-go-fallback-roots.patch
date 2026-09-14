@@ -1,0 +1,49 @@
+diff --git a/cmd/skopeo/condaFallbackRoots.go b/cmd/skopeo/condaFallbackRoots.go
+new file mode 100644
+index 0000000..b8e631b
+--- /dev/null
++++ b/cmd/skopeo/condaFallbackRoots.go
+@@ -0,0 +1,43 @@
++package main
++
++import (
++	"crypto/x509"
++	"os"
++	"path/filepath"
++)
++
++// init registers conda-forge's CA bundle as Go's fallback certificate roots.
++//
++// conda-forge's ca-certificates package installs its Mozilla bundle at
++// $PREFIX/ssl/cacert.pem, but a statically linked Go binary only consults the
++// host system store (/etc/ssl, …) unless SSL_CERT_FILE/SSL_CERT_DIR are set.
++// In minimal containers that store is empty and every registry call fails with
++// "x509: certificate signed by unknown authority".
++//
++// x509.SetFallbackRoots is only consulted when the system pool is unavailable
++// (or forced via GODEBUG=x509usefallbackroots=1), so this never overrides
++// explicit user configuration or a working system store — unlike an
++// SSL_CERT_FILE activation script, it also affects nothing but this process
++// and works without `conda activate`.
++func init() {
++	// Resolve the conda prefix relative to this executable, which conda
++	// always installs at $PREFIX/bin/skopeo.
++	// (This assumes the executable always resides at PREFIX/bin/executable!)
++	exe, err := os.Executable()
++	if err != nil {
++		return
++	}
++	if resolved, err := filepath.EvalSymlinks(exe); err == nil {
++		exe = resolved
++	}
++	condaCacert := filepath.Join(filepath.Dir(filepath.Dir(exe)), "ssl", "cacert.pem")
++	data, err := os.ReadFile(condaCacert)
++	if err != nil {
++		return
++	}
++	pool := x509.NewCertPool()
++	if !pool.AppendCertsFromPEM(data) {
++		return
++	}
++	x509.SetFallbackRoots(pool)
++}
