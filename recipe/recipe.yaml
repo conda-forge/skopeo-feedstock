@@ -13,9 +13,10 @@ source:
   target_directory: src
   patches:
     - 0001-Allow-relative-paths-for-system-config-files.patch
+    - 0002-use-conda-ca-bundle-as-go-fallback-roots.patch
 
 build:
-  number: 0
+  number: 1
   skip:
     - win
   script:
@@ -40,6 +41,7 @@ requirements:
     - go-md2man
   run:
     - containers-common
+    - ca-certificates
 
 tests:
   - script:
@@ -49,6 +51,10 @@ tests:
       # (via the 0001-Allow-relative-paths-for-system-config-files.patch)
       # rather than hardcoded system paths like /etc/containers/.
       - skopeo --debug inspect --override-arch amd64 --override-os linux docker://docker.io/alpine 2>&1 | grep "Using Conda environment"
+      # Verify the conda CA-bundle fallback (0002 patch): forcing Go's
+      # fallback roots must still verify public registries against
+      # $PREFIX/ssl/cacert.pem with no system store involved.
+      - GODEBUG=x509usefallbackroots=1 skopeo inspect --override-arch amd64 --override-os linux docker://docker.io/alpine
 
 about:
   license: Apache-2.0
