@@ -1,7 +1,7 @@
 schema_version: 1
 
 context:
-  version: "1.25.1"
+  version: "1.25.2"
 
 package:
   name: skopeo
@@ -9,7 +9,7 @@ package:
 
 source:
   url: https://github.com/containers/skopeo/archive/v${{ version }}.tar.gz
-  sha256: 8e889df322ec3d9457a2e3b61ba9fa77759dd81dac857514333fb3b837e98b65
+  sha256: d2ebe154195934908e2dd8d992bfda5dc554e1f5d8586c49b6a931fd69563d24
   target_directory: src
   patches:
     - 0001-Allow-relative-paths-for-system-config-files.patch
